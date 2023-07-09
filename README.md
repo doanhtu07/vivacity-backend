@@ -6,7 +6,7 @@ Normally, you would want to gitignore the .env file. But for the sake of testing
 
 ## Setup
 
-1. To fully test the API `/awesome/applicant`, you need to have Docker installed.
+1. To fully run the API `/awesome/applicant`, you need to have Docker installed.
 
    a. After Docker is installed, run `yarn dock` to initialize database instance in Docker.
 
@@ -14,7 +14,7 @@ Normally, you would want to gitignore the .env file. But for the sake of testing
 
    c. Finally, run `yarn pgen` to generate types to use in Typescript code.
 
-2. If you just want to test the API without database, call `/awesome/applicant/no-db`.
+2. If you just want to run the API without database, call `/awesome/applicant/no-db`.
 
 ## Run
 
