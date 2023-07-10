@@ -6,6 +6,7 @@ import { User } from "@prisma/client";
 import { convertExpressUser } from "./utils/Types";
 import * as http from "http";
 import prisma from "./prisma/client";
+import bodyParser from "body-parser";
 
 export default class App {
   server: http.Server | null | undefined = null;
@@ -16,10 +17,14 @@ export default class App {
 
     this.app.use(cors(corsOptions));
 
-    this.app.get("/awesome/applicant", (req, res) => {
+    this.app.get("/awesome/applicant", bodyParser.json(), (req, res) => {
+      const { userId } = req.query as { userId: string | null };
+
       prisma.user
         .findUnique({
-          where: { email: "doanhtu07@gmail.com" },
+          where: userId
+            ? { id: BigInt(userId) }
+            : { email: "doanhtu07@gmail.com" },
         })
         .then(function createUserIfNone(user) {
           if (!user) {
@@ -78,6 +83,28 @@ export default class App {
         user: convertExpressUser(fakeUser),
       });
     });
+
+    this.app.post(
+      "/awesome/applicant/update",
+      bodyParser.json(),
+      (req, res) => {
+        const { id, newEmail } = req.body as { id: string; newEmail: string };
+
+        prisma.user
+          .update({
+            where: { id: BigInt(id) },
+            data: { email: newEmail },
+          })
+          .then(function resolve(user) {
+            res.send({
+              user: convertExpressUser(user),
+            });
+          })
+          .catch((err) => {
+            console.error(ErrorWrap(err));
+          });
+      }
+    );
 
     // custom 404
     this.app.use((req, res) => {
